@@ -71,7 +71,7 @@ class SjsonnetPluginSourceSetTest extends SjsonnetPluginTestSupport with Asserti
 
     // check that output dir is included in resources
     assert(sourceSets.getByName("main").getResources.getSrcDirs.asScala.map(_.toPath)
-        .contains(task.getOutputDirectory.get().getAsFile.toPath))
+        .contains(task.getOutputDirectory().get.getAsFile.toPath))
   }
 
   @Test
@@ -102,7 +102,7 @@ class SjsonnetPluginSourceSetTest extends SjsonnetPluginTestSupport with Asserti
 
     // check that output dir is included in resources
     assert(sourceSets.getByName("main").getResources.getSrcDirs.asScala.map(_.toPath)
-        .contains(task.getOutputDirectory.get().getAsFile.toPath))
+        .contains(task.getOutputDirectory().get.getAsFile.toPath))
   }
 
 }

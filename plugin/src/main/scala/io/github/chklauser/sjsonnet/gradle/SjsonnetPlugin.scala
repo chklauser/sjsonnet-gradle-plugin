@@ -33,15 +33,15 @@ class SjsonnetPlugin extends Plugin[Project] {
           t.externalVariables.convention(s.externalVariables)
           t.topLevelArguments.convention(s.topLevelArguments)
           t.indent.convention(s.indent)
-
-          // If this specification matches a source set, register this task as part of the resource processing
-          target.sourceSets.flatMap(_.findByNameOpt(s.name)).foreach(sourceSet => {
-            target.getTasks.named(sourceSet.getProcessResourcesTaskName).configure({processTask =>
-              processTask.dependsOn(t)
-            }:Action[_ >: Task])
-          })
         }): Action[SjsonnetTask])
       aggregate.configure(t => t.dependsOn(generate))
+
+      // If this specification matches a source set, register this task as part of the resource processing
+      target.sourceSets.flatMap(_.findByNameOpt(s.name)).foreach(sourceSet => {
+        target.getTasks.named(sourceSet.getProcessResourcesTaskName).configure({ processTask =>
+          processTask.dependsOn(generate)
+        }:Action[_ >: Task])
+      })
     })
 
     target.getPlugins.withType(classOf[JavaPlugin]).all({ _: Plugin[Project] =>

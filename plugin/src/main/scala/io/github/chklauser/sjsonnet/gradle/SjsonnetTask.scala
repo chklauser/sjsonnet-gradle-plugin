@@ -24,7 +24,6 @@ class SjsonnetTask extends DefaultTask() {
   //noinspection DuplicatedCode
   @BeanProperty
   @(OutputDirectory@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val outputDirectory: DirectoryProperty = getProject.getObjects.directoryProperty()
 
   //noinspection DuplicatedCode

@@ -21,48 +21,35 @@ class SjsonnetSpec(@BeanProperty val name : String, project: Project) {
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(OutputDirectory@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val outputDirectory: DirectoryProperty = project.getObjects.directoryProperty()
   outputDirectory.convention(project.getLayout.getBuildDirectory.dir(s"generated/resources/$name/jsonnet"))
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(InputFiles@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val sources: ConfigurableFileCollection = project.getObjects.fileCollection()
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(InputFiles@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val additionalInputs: ConfigurableFileCollection = project.getObjects.fileCollection()
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(InputFiles@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val imports: ConfigurableFileCollection = project.getObjects.fileCollection()
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(InputFiles@beanGetter)
-  @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val searchPath: ConfigurableFileCollection = project.getObjects.fileCollection()
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(Input@beanGetter)
   val topLevelArguments: MapProperty[String, Any] = project.getObjects.mapProperty(classOf[String], classOf[Any])
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(Input@beanGetter)
   val externalVariables: MapProperty[String, Any] = project.getObjects.mapProperty(classOf[String], classOf[Any])
 
   //noinspection DuplicatedCode
   @BeanProperty
-  @(Input@beanGetter)
   val indent: Property[Int] = project.getObjects.property(classOf[Int]).convention(-1)
 
   {
