@@ -1,11 +1,18 @@
 plugins {
     java
-    scala
     `java-gradle-plugin`
+    `maven-publish`
+    id("com.gradle.plugin-publish") version "0.15.0"
+    id("org.ajoberstar.reckon") version "0.13.0"
 }
+configure<org.ajoberstar.reckon.gradle.ReckonExtension> {
+    scopeFromProp()
+    stageFromProp("beta", "rc", "final")
+}
+// scala doesn't play well with 'reckon'. https://github.com/ajoberstar/reckon/issues/147
+apply(plugin = "scala")
 
 group = "io.github.chklauser.sjsonnet"
-version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -17,6 +24,12 @@ dependencies {
     testImplementation("org.scalatest:scalatest_2.13:3.2.9")
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+pluginBundle {
+    website = "https://github.com/chklauser/sjsonnet-gradle-plugin"
+    vcsUrl = "https://github.com/chklauser/sjsonnet-gradle-plugin.git"
+    tags = listOf("jsonnet", "sjsonnet", "json", "generator")
 }
 
 gradlePlugin {
@@ -36,6 +49,19 @@ tasks {
         useJUnitPlatform {
             testLogging {
                 events("passed", "skipped", "failed")
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/chklauser/sjsonnet-gradle-plugin")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
