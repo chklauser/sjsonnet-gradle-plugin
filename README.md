@@ -1,5 +1,8 @@
 # sjsonnet-gradle-plugin
-Gradle plugin for running sjsonnet (Scala implementation of the Jsonnet JSON templating language)
+Gradle plugin for running sjsonnet (Scala implementation of the Jsonnet JSON templating language).
+
+This project is not associated with [databricks/sjsonnet](https://github.com/databricks/sjsonnet), but builds on their
+excellent work.
 
 ## Usage
 

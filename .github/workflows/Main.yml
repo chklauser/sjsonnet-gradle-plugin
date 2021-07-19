@@ -18,6 +18,8 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build & Test
-        # Building & Testing the examples project so that we can do everything in 1 build
-        working-directory: examples
-        run: ./gradlew :plugin:assemble :plugin:check assemble check --no-build-cache
+        uses: burrunan/gradle-cache-action@cbdf4342ff988d143aa7a5aeceedffafb8c74bcf
+        with:
+          # Building & Testing the examples project so that we can do everything in 1 build
+          build-root-directory: examples
+          arguments: :plugin:assemble :plugin:check assemble check --no-build-cache
