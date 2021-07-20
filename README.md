@@ -51,8 +51,6 @@ sjsonnet {
       indent.set(2)
   }
 }
-
-tasks["assemble"].dependsOn("jsonnetCustomGenerate")
 ```
 
 Custom source sets are also supported. Whenever the name of an `sjsonnet` specification matches the name
