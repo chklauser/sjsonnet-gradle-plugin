@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.scala-lang:scala-library:2.13.6")
+    implementation("org.scala-lang:scala-library:2.13.10")
     implementation("com.databricks:sjsonnet_2.13:0.4.0")
     testImplementation("org.scalatest:scalatest_2.13:3.2.9")
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
