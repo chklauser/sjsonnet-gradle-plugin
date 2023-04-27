@@ -1,11 +1,10 @@
 plugins {
     java
+    scala
     `java-gradle-plugin`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "0.15.0"
+    id("com.gradle.plugin-publish") version "1.2.0"
 }
-
-apply(plugin = "scala")
 
 group = "io.github.chklauser.sjsonnet"
 
@@ -19,6 +18,15 @@ dependencies {
     testImplementation("org.scalatest:scalatest_2.13:3.2.9")
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    constraints {
+        implementation("org.apache.logging.log4j:log4j-core") {
+            version {
+                strictly("[2.17, 3[")
+                prefer("2.17.1")
+            }
+            because("CVE-2021-44228, CVE-2021-45046, CVE-2021-45105: Log4j vulnerable to remote code execution and other critical security vulnerabilities")
+        }
+    }
 }
 
 pluginBundle {
