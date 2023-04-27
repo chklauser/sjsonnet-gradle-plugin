@@ -16,10 +16,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/wrapper-validation-action@8d49e559aae34d3e0eb16cde532684bc9702762b
       - name: Build & Test
         # https://github.com/burrunan/gradle-cache-action
-        uses: burrunan/gradle-cache-action@cbdf4342ff988d143aa7a5aeceedffafb8c74bcf
+        uses: burrunan/gradle-cache-action@a54b6ce2cbbba932e5d142129dddef103e6ad143
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -28,7 +28,7 @@ jobs:
           arguments: :plugin:assemble :plugin:check assemble check --continue --stacktrace
       - name: Publish Snapshot (on main)
         if: github.ref == 'refs/heads/main'
-        uses: burrunan/gradle-cache-action@cbdf4342ff988d143aa7a5aeceedffafb8c74bcf
+        uses: burrunan/gradle-cache-action@a54b6ce2cbbba932e5d142129dddef103e6ad143
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

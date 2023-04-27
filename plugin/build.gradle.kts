@@ -3,13 +3,8 @@ plugins {
     `java-gradle-plugin`
     `maven-publish`
     id("com.gradle.plugin-publish") version "0.15.0"
-    id("org.ajoberstar.reckon") version "0.13.0"
 }
-configure<org.ajoberstar.reckon.gradle.ReckonExtension> {
-    scopeFromProp()
-    stageFromProp("beta", "rc", "final")
-}
-// scala doesn't play well with 'reckon'. https://github.com/ajoberstar/reckon/issues/147
+
 apply(plugin = "scala")
 
 group = "io.github.chklauser.sjsonnet"
