@@ -47,9 +47,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.scala-lang:scala-library:2.13.10")
-    testImplementation("org.scalatest:scalatest_2.13:3.2.9")
-    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    implementation("org.scala-lang:scala-library:2.13.12")
+    testImplementation("org.scalatest:scalatest_2.13:3.2.17")
+    testImplementation(platform("org.junit:junit-bom:5.10.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
