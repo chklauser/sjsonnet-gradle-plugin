@@ -5,6 +5,8 @@ import org.gradle.api.provider.{MapProperty, Property}
 import org.gradle.api.tasks.{CacheableTask, Input, InputFiles, OutputDirectory, PathSensitive, PathSensitivity, SkipWhenEmpty, TaskAction}
 import org.gradle.api.{DefaultTask, GradleException}
 import os.Path
+import sjsonnet.Importer
+import sjsonnet.ResolvedFile
 import sjsonnet.{OsPath, SjsonnetMain}
 
 import java.io.{BufferedOutputStream, File, FileOutputStream, OutputStreamWriter, StringWriter}
@@ -92,9 +94,9 @@ class SjsonnetTask extends DefaultTask() {
     case value => throw new GradleException(s"Cannot translate $path=$value into a JSON value to pass to Jsonnet.")
   }}
 
-  private def externalMap(source: java.util.Map[String, Any]): Map[String, ujson.Value] = {
+  private def externalMap(source: java.util.Map[String, Any]): Map[String, String] = {
     import scala.jdk.CollectionConverters._
-    source.asScala.toMap.map(entry => (entry._1, javaToJson("", entry._2)))
+    source.asScala.toMap.map(entry => (entry._1, ujson.write(javaToJson("", entry._2))))
   }
 
   @TaskAction
@@ -155,23 +157,27 @@ class SjsonnetTask extends DefaultTask() {
     val workingDirectory = sjsonnet.OsPath(os.Path(sourceFile, os.Path(sourceFile)))
 
     val allowedImports = if(knownImports.nonEmpty) { Some(knownImports) } else { None }
-    val resolver = SjsonnetMain.resolveImport(searchRoot, allowedImports) _
-    val resolverWithLogging = (p:sjsonnet.Path,s: String) => {
-      val result = resolver(p,s)
-      if(getLogger.isDebugEnabled) {
-        getLogger.debug("jsonnet import working_directory={}, import={} ==> {}", Array(
-          p, s, result.map(_._1)
-        ): _*)
+    val importer = SjsonnetMain.resolveImport(searchRoot, allowedImports)
+    val importerWithLogging = new Importer {
+      override def resolve(docBase: sjsonnet.Path, importName: String): Option[sjsonnet.Path] = {
+        val result = importer.resolve(docBase, importName)
+        if(getLogger.isDebugEnabled) {
+          getLogger.debug("jsonnet import working_directory={}, import={} ==> {}", Array(
+            docBase, importName, result
+          ): _*)
+        }
+        result
       }
-      result
+
+      override def read(path: sjsonnet.Path): Option[ResolvedFile] = importer.read(path)
     }
 
     new sjsonnet.Interpreter(
-      SjsonnetPlugin.parseCache.get(),
       externalMap(externalVariables.get()),
       externalMap(topLevelArguments.get()),
       workingDirectory,
-      resolverWithLogging)
+      importerWithLogging,
+      SjsonnetPlugin.parseCache.get())
   }
 
   private def bufferedUtf8OutputStreamWriter(destinationFile: File) = {

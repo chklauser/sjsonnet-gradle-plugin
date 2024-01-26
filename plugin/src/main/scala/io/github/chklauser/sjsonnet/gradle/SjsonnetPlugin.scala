@@ -12,6 +12,8 @@ import sjsonnet.{Expr, FileScope, Path, SjsonnetMain}
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.collection.mutable
 import internal.implicits._
+import sjsonnet.DefaultParseCache
+import sjsonnet.ParseCache
 
 class SjsonnetPlugin extends Plugin[Project] {
   private[this] var sourceSetRegistered = new AtomicBoolean(false)
@@ -84,6 +86,6 @@ class SjsonnetPlugin extends Plugin[Project] {
 }
 
 object SjsonnetPlugin {
-  val parseCache: ThreadLocal[mutable.HashMap[(Path, String), Parsed[(Expr, FileScope)]]] =
-    ThreadLocal.withInitial(() => SjsonnetMain.createParseCache())
+  val parseCache: ThreadLocal[ParseCache] =
+    ThreadLocal.withInitial(() => new DefaultParseCache())
 }
