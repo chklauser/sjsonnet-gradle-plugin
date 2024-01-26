@@ -7,6 +7,7 @@ import org.gradle.api.{DefaultTask, GradleException}
 import os.Path
 import sjsonnet.Importer
 import sjsonnet.ResolvedFile
+import sjsonnet.Settings
 import sjsonnet.{OsPath, SjsonnetMain}
 
 import java.io.{BufferedOutputStream, File, FileOutputStream, OutputStreamWriter, StringWriter}
@@ -20,7 +21,7 @@ import scala.io.{Codec, Source}
 import scala.util.Using
 
 @CacheableTask
-//noinspection UnstableApiUsage
+//noinspection UnstableApiUsage,DuplicatedCode
 class SjsonnetTask extends DefaultTask() {
 
   //noinspection DuplicatedCode
@@ -28,48 +29,66 @@ class SjsonnetTask extends DefaultTask() {
   @(OutputDirectory@beanGetter)
   val outputDirectory: DirectoryProperty = getProject.getObjects.directoryProperty()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(SkipWhenEmpty@beanGetter)
   @(InputFiles@beanGetter)
   @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val sources: ConfigurableFileCollection = getProject.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(SkipWhenEmpty@beanGetter)
   @(InputFiles@beanGetter)
   @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val additionalInputs: ConfigurableFileCollection = getProject.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(InputFiles@beanGetter)
   @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val imports: ConfigurableFileCollection = getProject.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(InputFiles@beanGetter)
   @(PathSensitive@beanGetter)(PathSensitivity.RELATIVE)
   val searchPath: ConfigurableFileCollection = getProject.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(Input@beanGetter)
   val topLevelArguments: MapProperty[String, Any] =
   getProject.getObjects.mapProperty(classOf[String], classOf[Any])
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(Input@beanGetter)
   val externalVariables: MapProperty[String, Any] =
   getProject.getObjects.mapProperty(classOf[String], classOf[Any])
 
-  //noinspection DuplicatedCode
   @BeanProperty
   @(Input@beanGetter)
   val indent: Property[Int] = getProject.getObjects.property(classOf[Int]).convention(2)
+
+  // Properties that map onto Sjsonnet (interpreter) Settings
+  @BeanProperty
+  @(Input@beanGetter)
+  val preserveOrder: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  @(Input@beanGetter)
+  val strict: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  @(Input@beanGetter)
+  val noStaticErrors: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  @(Input@beanGetter)
+  val noDuplicateKeysInComprehension: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  @(Input@beanGetter)
+  val strictImportSyntax: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  @(Input@beanGetter)
+  val strictInheritedAssertions: Property[Boolean] = getProject.getObjects.property(classOf[Boolean]).convention(false)
 
   private def javaToJson(path: String, source: Any): ujson.Value = {
     getLogger.info("javaToJson({}, {})", Array(path, source):_*) ; source match {
@@ -177,7 +196,15 @@ class SjsonnetTask extends DefaultTask() {
       externalMap(topLevelArguments.get()),
       workingDirectory,
       importerWithLogging,
-      SjsonnetPlugin.parseCache.get())
+      SjsonnetPlugin.parseCache.get(),
+      new Settings(
+        preserveOrder.get(),
+        strict.get(),
+        noStaticErrors.get(),
+        noDuplicateKeysInComprehension.get(),
+        strictImportSyntax.get(),
+        strictInheritedAssertions.get()
+      ))
   }
 
   private def bufferedUtf8OutputStreamWriter(destinationFile: File) = {

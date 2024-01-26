@@ -29,6 +29,14 @@ sjsonnet {
         indent.set(4)
         sources.from(project.layout.projectDirectory.dir("custom-src"))
         // no need to specify additional inputs because each *.jsonnet file is self-contained
+
+        // custom settings (they all default to false)
+        preserveOrder.set(true)
+        strict.set(true)
+        noStaticErrors.set(true)
+        noDuplicateKeysInComprehension.set(true)
+        strictImportSyntax.set(true)
+        strictInheritedAssertions.set(true)
     }
 
     create("main") {

@@ -124,6 +124,40 @@ tasks {
 If you use `import` or `importstr`, the same considerations as for the "custom specifications"
 approach apply.
 
+### Settings
+The plugin supports a subset of the settings of sjsonnet. 
+See [Config.scala](https://github.com/databricks/sjsonnet/blob/9534260fff4a50d29db379e307bce9a484790fa7/sjsonnet/src-jvm-native/sjsonnet/Config.scala)
+for the documentation of those settings.
+
+All settings below are also available on the `SjsonnetTask`.
+
+```kotlin
+// build.gradle.kts (Kotlin Script Syntax)
+
+sjsonnet {
+  create("main") {
+    // Sjsonnet settings
+    indent.set(2)
+    preserveOrder.set(true)
+    strict.set(true)
+    noStaticErrors.set(true)
+    noDuplicateKeysInComprehension.set(true)
+    strictImportSyntax.set(true)
+    strictInheritedAssertions.set(true)
+    topLevelArguments.put("a1", 2)
+    externalVariables.put("e1", 1)
+
+    // Gradle plugin settings
+    // `searchPath` is the list of directories to search for imported files 
+    searchPath.from(...)
+    // If `imports` is set, then it serves as an allow-list for imports (only files in the list can be imported)
+    // This is useful because the plugin needs to list dependencies for up-to-date checking. Un-declared imported
+    // files can lead to unpredictable result.
+    imports.from(...)
+  }
+}
+```
+
 ## FAQ
 ### Why write a Gradle plugin in scala?
 The `s` in `sjsonnet` stands for "Scala". Its API is not straightforward to

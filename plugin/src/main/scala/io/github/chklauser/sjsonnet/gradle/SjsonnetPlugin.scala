@@ -35,6 +35,12 @@ class SjsonnetPlugin extends Plugin[Project] {
           t.externalVariables.convention(s.externalVariables)
           t.topLevelArguments.convention(s.topLevelArguments)
           t.indent.convention(s.indent)
+          t.preserveOrder.convention(s.preserveOrder)
+          t.strict.convention(s.strict)
+          t.noStaticErrors.convention(s.noStaticErrors)
+          t.noDuplicateKeysInComprehension.convention(s.noDuplicateKeysInComprehension)
+          t.strictImportSyntax.convention(s.strictImportSyntax)
+          t.strictInheritedAssertions.convention(s.strictInheritedAssertions)
         }): Action[SjsonnetTask])
       aggregate.configure(t => t.dependsOn(generate))
 
