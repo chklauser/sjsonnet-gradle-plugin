@@ -10,7 +10,7 @@ import scala.annotation.meta.beanGetter
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
-//noinspection UnstableApiUsage
+//noinspection UnstableApiUsage,DuplicatedCode
 class SjsonnetSpec(@BeanProperty val name : String, project: Project) {
   if(name == null || name.isEmpty) {
     throw new GradleException("Name of sjsonnet spec cannot be null or empty.")
@@ -19,38 +19,49 @@ class SjsonnetSpec(@BeanProperty val name : String, project: Project) {
   @BeanProperty
   val namePascalCase: String = s"${name.charAt(0).toUpper}${name.substring(1)}"
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val outputDirectory: DirectoryProperty = project.getObjects.directoryProperty()
   outputDirectory.convention(project.getLayout.getBuildDirectory.dir(s"generated/resources/$name/jsonnet"))
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val sources: ConfigurableFileCollection = project.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val additionalInputs: ConfigurableFileCollection = project.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val imports: ConfigurableFileCollection = project.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val searchPath: ConfigurableFileCollection = project.getObjects.fileCollection()
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val topLevelArguments: MapProperty[String, Any] = project.getObjects.mapProperty(classOf[String], classOf[Any])
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val externalVariables: MapProperty[String, Any] = project.getObjects.mapProperty(classOf[String], classOf[Any])
 
-  //noinspection DuplicatedCode
   @BeanProperty
   val indent: Property[Int] = project.getObjects.property(classOf[Int]).convention(-1)
+
+  // Properties that map onto Sjsonnet (interpreter) Settings
+  @BeanProperty
+  val preserveOrder: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  val strict: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  val noStaticErrors: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  val noDuplicateKeysInComprehension: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  val strictImportSyntax: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
+
+  @BeanProperty
+  val strictInheritedAssertions: Property[Boolean] = project.getObjects.property(classOf[Boolean]).convention(false)
 
   {
     project.sourceSets.flatMap(ss => Option(ss.findByName(name))).foreach { sourceSet =>

@@ -19,6 +19,17 @@ class VerifyGeneratedOutputIntTest extends Assertions {
   }
 
   @Test
+  def customPreservesOrder(): Unit = {
+    val path = basePath.resolve("custom").resolve("jsonnet/subdirectory/f4.json")
+    val content = Files.readString(path, StandardCharsets.UTF_8)
+
+    val i1 = content.indexOf("ingredients")
+    val i2 = content.indexOf("garnish")
+    val i3 = content.indexOf("served")
+    assert(Seq(i1, i2, i3).sorted == Seq(i1, i2, i3))
+  }
+
+  @Test
   def main(): Unit = {
     assertTwoFileStructure("main", 5, Seq("Champagne Essence"))
   }

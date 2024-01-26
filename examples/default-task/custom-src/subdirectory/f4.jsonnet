@@ -3,6 +3,7 @@
 {
   'Vodka Martini': 'yes, please',
   Manhattan: {
+    // Order of keys should be preserved
     ingredients: [
       { kind: 'Rye', qty: 2.5 },
       { kind: 'Sweet Red Vermouth', qty: 1 },
